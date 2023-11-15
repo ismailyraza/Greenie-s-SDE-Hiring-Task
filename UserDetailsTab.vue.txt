@@ -1,0 +1,107 @@
+<template>
+  <div>
+  
+    <input v-model="searchQuery" placeholder="Search..." />
+
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>ID</th>
+          <th>Creation Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="user in filteredUsers" :key="user.id" @click="openReportModal(user)">
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>{{ user.id }}</td>
+          <td>{{ user.creationDate }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="selectedUser">
+      <div>{{ selectedUser.username }} Report</div>
+      <!-- Other report details go here -->
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      searchQuery: '',
+      selectedUser: null,
+    };
+  },
+  computed: {
+    filteredUsers() {
+       const query = this.searchQuery.toLowerCase().trim();
+
+      if (!query) {
+        return this.users; // Return all users if the search query is empty
+      }
+
+      return this.users.filter((user) => {
+        // Customize the conditions based on your search requirements
+        return (
+          user.username.toLowerCase().includes(query) ||
+          user.email.toLowerCase().includes(query) ||
+          user.phone.includes(query) ||
+          user.id.toString().includes(query) ||
+          user.creationDate.includes(query)
+        );
+      });
+    },
+  },
+  methods: {
+    openReportModal(user) {
+      this.selectedUser = user;
+    },
+    closeReportModal() {
+      this.selectedUser = null;
+    },
+  },
+};
+</script>
+
+<style scoped>
+
+input {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+
+div[v-if="selectedUser"] {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+</style>
+
